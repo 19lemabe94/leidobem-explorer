@@ -1,6 +1,6 @@
 # 🇧🇷 Lei do Bem Explorer: Incentivos Fiscais para Inovação
 
-![Banner do Projeto Lei do Bem Explorer](URL_DA_IMAGEM_BANNER_AQUI) 
+![Banner do Projeto Lei do Bem Explorer](img/banner.png) 
 Uma ferramenta interativa para desvendar as oportunidades da Lei do Bem (Lei nº 11.196/2005), conectando os incentivos fiscais à inovação tecnológica e de dados no Brasil. Desenvolvido para empresas, contadores e consultores, o "Lei do Bem Explorer" simplifica a compreensão dos critérios de elegibilidade, benefícios financeiros e a documentação necessária para aproveitar este importante mecanismo de fomento à P&D.
 
 ## 🚀 Funcionalidades Principais
