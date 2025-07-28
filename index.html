@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://www.coplancontabilidade.com.br/images/favicon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explorador Interativo da Lei do Bem | Incentivos Fiscais para Inovação</title>
+    <meta name="description" content="Descubra a Lei do Bem (11.196/2005) de forma interativa. Avalie a elegibilidade da sua empresa, simule benefícios fiscais e entenda como projetos de inovação em dados se encaixam.">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <meta property="og:title" content="Explorador Interativo da Lei do Bem">
+    <meta property="og:description" content="Descubra a Lei do Bem (11.196/2005) de forma interativa. Avalie a elegibilidade da sua empresa, simule benefícios fiscais e entenda como projetos de inovação em dados se encaixam.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="URL_DA_SUA_PAGINA_AQUI"> 
+    <meta property="og:image" content="URL_DA_IMAGEM_PREVIEW_AQUI">
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .chart-container { position: relative; width: 100%; max-width: 800px; margin-left: auto; margin-right: auto; height: 350px; max-height: 400px; }
+        @media (min-width: 768px) { .chart-container { height: 400px; } }
+        .nav-link { transition: color 0.3s ease, border-color 0.3s ease; }
+        .nav-link:hover, .nav-link.active { color: #2563eb; border-color: #2563eb; }
+        .tab-button.active { background-color: #2563eb; color: #ffffff; }
+        .tab-button { transition: background-color 0.3s ease, color 0.3s ease; }
+        .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.5s ease-out, padding 0.5s ease-out; }
+        .accordion-item.open .accordion-content { max-height: 500px; padding-top: 1rem; padding-bottom: 1rem; }
+        .accordion-item.open .accordion-arrow { transform: rotate(180deg); }
+        .accordion-arrow { transition: transform 0.3s ease; }
+        /* CSS para o checklist - feedback visual ao marcar */
+        .checklist-label.checked {
+            background-color: #dbeafe; /* bg-blue-100 */
+            border-left: 4px solid #2563eb; /* border-blue-600 */
+        }
+
+        /* Removido o CSS .logo anterior para usar classes Tailwind diretamente no HTML */
+        #logo {
+            width: ;
+        }
+    </style>
+</head>
+<body class="bg-stone-50 text-slate-800">
+
+    <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-4">
+                    <a href="https://impulso.team/pt" target="_blank" rel="noopener noreferrer" class="block h-8 flex-shrink-0">
+                        <img id="logo" src="logoimpulso.png" alt="Logo Impulso" class="h-full object-contain">
+                    </a>
+                    <div class="text-lg font-bold text-black">
+                        <span class="text-3xl">|</span>
+                    </div>
+                    <a href="https://www.coplancontabilidade.com.br/index" target="_blank" rel="noopener noreferrer" class="block h-8 flex-shrink-0">
+                        <img src="logocoplan.jpg" alt="Logo Coplan Contabilidade" class="h-full object-contain">
+                    </a>
+                </div>
+                <div class="hidden md:flex space-x-6">
+                    <a href="#elegibilidade" class="nav-link text-slate-600 border-b-2 border-transparent pb-1">Elegibilidade</a>
+                    <a href="#incentivos" class="nav-link text-slate-600 border-b-2 border-transparent pb-1">Incentivos</a>
+                    <a href="#inovacao" class="nav-link text-slate-600 border-b-2 border-transparent pb-1">Inovação em Dados</a>
+                    <a href="#estrategia" class="nav-link text-slate-600 border-b-2 border-transparent pb-1">Estratégia</a>
+                    <a href="#documentacao" class="nav-link text-slate-600 border-b-2 border-transparent pb-1">Documentação</a>
+                    <a href="#formpd" class="nav-link text-slate-600 border-b-2 border-transparent pb-1">FORMP&D</a>
+                    <a href="#boas-praticas" class="nav-link text-slate-600 border-b-2 border-transparent pb-1">Boas Práticas</a>
+                </div>
+                <div class="md:hidden">
+                    <button id="mobile-menu-button" class="text-slate-600 focus:outline-none" aria-label="Abrir menu móvel">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                    </button>
+                </div>
+            </div>
+            <div id="mobile-menu" class="hidden md:hidden mt-4 space-y-2">
+                <a href="#elegibilidade" class="block nav-link text-slate-600 py-2">Elegibilidade</a>
+                <a href="#incentivos" class="block nav-link text-slate-600 py-2">Incentivos</a>
+                <a href="#inovacao" class="block nav-link text-slate-600 py-2">Inovação em Dados</a>
+                <a href="#estrategia" class="block nav-link text-slate-600 py-2">Estratégia</a>
+                <a href="#documentacao" class="block nav-link text-slate-600 py-2">Documentação</a>
+                <a href="#formpd" class="block nav-link text-slate-600 py-2">FORMP&D</a>
+                <a href="#boas-praticas" class="block nav-link text-slate-600 py-2">Boas Práticas</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-4 py-8 md:py-16">
+
+        <section id="inicio" class="text-center mb-20">
+            <h1 class="text-4xl md:text-5xl font-bold text-slate-900 mb-4">Lei do Bem Explorer</h1>
+            <p class="text-lg text-slate-600 max-w-3xl mx-auto">Desvende as <strong>oportunidades estratégicas</strong> da Lei do Bem, conectando incentivos fiscais à inovação tecnológica e de dados.</p>
+        </section>
+
+        <section id="elegibilidade" class="mb-20 scroll-mt-20">
+            <h2 class="text-3xl font-bold text-center mb-2">Sua Empresa é Elegível?</h2>
+            <p class="text-slate-600 text-center mb-10 max-w-2xl mx-auto">A Lei do Bem se aplica a empresas que cumprem critérios específicos. Utilize este <strong>checklist interativo</strong> para uma avaliação rápida e entenda os pré-requisitos fundamentais.</p>
+            <div class="max-w-3xl mx-auto bg-white p-8 rounded-xl shadow-lg">
+                <div id="checklist" class="space-y-5">
+                    <label class="flex items-center p-4 rounded-lg bg-stone-100 hover:bg-stone-200 transition-colors cursor-pointer checklist-label">
+                        <input type="checkbox" data-criterion="lucroReal" class="h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                        <span class="ml-4 text-slate-700 font-medium">Regime de Tributação: <strong>Lucro Real</strong></span>
+                    </label>
+                    <label class="flex items-center p-4 rounded-lg bg-stone-100 hover:bg-stone-200 transition-colors cursor-pointer checklist-label">
+                        <input type="checkbox" data-criterion="lucroFiscal" class="h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                        <span class="ml-4 text-slate-700 font-medium">Apresentar <strong>Lucro Fiscal</strong> no período</span>
+                    </label>
+                    <label class="flex items-center p-4 rounded-lg bg-stone-100 hover:bg-stone-200 transition-colors cursor-pointer checklist-label">
+                        <input type="checkbox" data-criterion="regularidade" class="h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                        <span class="ml-4 text-slate-700 font-medium">Comprovar <strong>Regularidade Fiscal</strong> (CND)</span>
+                    </label>
+                    <label class="flex items-center p-4 rounded-lg bg-stone-100 hover:bg-stone-200 transition-colors cursor-pointer checklist-label">
+                        <input type="checkbox" data-criterion="investimento" class="h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                        <span class="ml-4 text-slate-700 font-medium">Realizar investimentos em <strong>Pesquisa, Desenvolvimento e Inovação (PD&I)</strong></span>
+                    </label>
+                </div>
+                <div id="eligibility-result" class="mt-8 p-5 rounded-lg text-center font-semibold transition-all duration-500" role="status" aria-live="polite">
+                    Selecione os critérios para ver o resultado.
+                </div>
+            </div>
+        </section>
+
+        <section id="incentivos" class="mb-20 scroll-mt-20">
+            <h2 class="text-3xl font-bold text-center mb-2">Os Incentivos na Prática</h2>
+            <p class="text-slate-600 text-center mb-10 max-w-2xl mx-auto">O principal benefício é a <strong>dedução de gastos com inovação</strong> da base de cálculo do IRPJ e CSLL. Use o simulador abaixo para visualizar o impacto financeiro direto.</p>
+            <div class="bg-white p-8 rounded-xl shadow-lg">
+                <div class="mb-6">
+                    <label for="despesasSlider" class="block text-lg font-medium text-slate-700 mb-3 text-center">Arraste para definir o dispêndio anual com PD&I:</label>
+                    <input id="despesasSlider" type="range" min="10000" max="10000000" step="10000" value="100000" class="w-full h-2 bg-stone-200 rounded-lg appearance-none cursor-pointer">
+                    <div class="text-center mt-3">
+                        <span class="text-2xl font-bold text-blue-600" id="despesasValor">R$ 100.000</span>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="incentivosChart"></canvas>
+                </div>
+                   <div class="mt-10 grid md:grid-cols-2 gap-6 text-center">
+                    <div class="bg-stone-100 p-6 rounded-lg">
+                        <h4 class="font-bold text-xl text-slate-800 mb-2">IPI Reduzido</h4>
+                        <p class="text-slate-600">Redução de <strong>50% do IPI</strong> na compra de equipamentos e máquinas novas para PD&I.</p>
+                    </div>
+                       <div class="bg-stone-100 p-6 rounded-lg">
+                        <h4 class="font-bold text-xl text-slate-800 mb-2">Depreciação Acelerada</h4>
+                        <p class="text-slate-600"><strong>Depreciação integral</strong>, no ano da aquisição, de bens novos para PD&I, reduzindo IRPJ e CSLL.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="inovacao" class="mb-20 scroll-mt-20">
+            <h2 class="text-3xl font-bold text-center mb-2">Inovação em Dados e a Lei</h2>
+            <p class="text-slate-600 text-center mb-10 max-w-2xl mx-auto">A Lei do Bem considera inovação a "concepção de novo produto ou processo" ou "melhorias incrementais" que gerem "ganho de qualidade ou produtividade". Veja como <strong>projetos de dados se encaixam</strong>.</p>
+            
+            <div class="bg-white p-8 rounded-xl shadow-lg">
+                <div class="mb-8 flex justify-center border-b border-stone-200">
+                    <button data-tab="dev-experimental" class="tab-button py-3 px-6 font-medium text-slate-600 active focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">Desenvolvimento Experimental</button>
+                    <button data-tab="pesquisa-aplicada" class="tab-button py-3 px-6 font-medium text-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">Pesquisa Aplicada</button>
+                </div>
+
+                <div id="tab-content" class="min-h-[400px]">
+                    <div id="dev-experimental-content">
+                        <h3 class="text-2xl font-semibold mb-4 text-slate-800">O que é Desenvolvimento Experimental?</h3>
+                        <p class="text-slate-600 mb-6">É o uso de conhecimento existente para criar ou melhorar significativamente produtos, processos ou serviços. É aqui que a maioria dos projetos de engenharia de dados, como o <strong class="text-blue-600">open-cnpj-data-pipeline</strong>, se enquadra. O foco é superar um <strong class="text-blue-600">desafio tecnológico</strong> e gerar um <strong class="text-blue-600">ganho mensurável</strong>.</p>
+                        
+                        <div class="bg-blue-50 border-l-4 border-blue-500 p-6 rounded-r-lg">
+                            <h4 class="font-bold text-lg text-blue-800 mb-3">Case Study: Open CNPJ Data Pipeline</h4>
+                            <ul class="space-y-2 list-disc list-inside text-blue-700">
+                                <li><strong>Inovação de Processo:</strong> Criação de uma nova arquitetura de pipeline para otimizar o processamento massivo de dados públicos, demonstrando ganhos de performance e produtividade.</li>
+                                <li><strong>Melhoria Incremental:</strong> Aprimoramento de rotinas ETL que resulta em redução drástica de erros e aumento de velocidade, garantindo maior qualidade dos dados.</li>
+                                <li><strong>Bem Intangível:</strong> O software do pipeline, sendo um desenvolvimento original, qualifica-se para amortização acelerada, gerando benefício fiscal direto.</li>
+                            </ul>
+                            <div class="mt-6 text-center">
+                            <a href="https://github.com/19lemabe94/open-cnpj-data-pipeline" target="_blank" rel="noopener noreferrer" class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-colors shadow-md">
+                                Ver Projeto no GitHub
+                            </a>
+                        </div>
+                        </div>
+                    </div>
+                    <div id="pesquisa-aplicada-content" class="hidden">
+                        <h3 class="text-2xl font-semibold mb-4 text-slate-800">O que é Pesquisa Aplicada?</h3>
+                        <p class="text-slate-600 mb-6">Envolve trabalhos originais para adquirir novos conhecimentos com um objetivo prático específico. Na engenharia de dados, isso significa desenvolver novas abordagens para resolver problemas complexos, muitas vezes antes do desenvolvimento experimental.</p>
+                           <div class="bg-teal-50 border-l-4 border-teal-500 p-6 rounded-r-lg">
+                            <h4 class="font-bold text-lg text-teal-800 mb-3">Exemplos em Engenharia de Dados</h4>
+                            <ul class="space-y-2 list-disc list-inside text-teal-700">
+                                <li>Desenvolvimento de algoritmos inovadores para detecção automática de inconsistências ou fraudes em grandes bases de dados fiscais.</li>
+                                <li>Investigação de novos modelos para processamento de dados não estruturados que otimizem consultas em larga escala.</li>
+                                <li>Criação de métodos para enriquecer dados públicos com fontes externas de forma automatizada e confiável, superando limitações dos dados originais.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+<section id="estrategia" class="mb-20 scroll-mt-20">
+            <h2 class="text-3xl font-bold text-center mb-2">A Oportunidade Estratégica</h2>
+            <p class="text-slate-600 text-center mb-10 max-w-2xl mx-auto">Para uma firma de contabilidade, dominar a Lei do Bem e suas aplicações em tecnologia não é apenas sobre compliance. É sobre <strong>gerar novo valor</strong>, se diferenciar no mercado e fortalecer o relacionamento com os clientes.</p>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-white p-8 rounded-xl shadow-lg text-center transform hover:scale-105 transition-transform duration-300">
+                    <div class="mx-auto rounded-full h-16 w-16 flex items-center justify-center mb-4">
+                        <a class="logo" href="https://www.coplancontabilidade.com.br/index" target="_blank" rel="noopener noreferrer" class="block h-8"> <img src="logocoplan.jpg" alt="Logo Coplan Contabilidade" class="h-full object-contain">
+                    </a>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-2">Novos Serviços de Consultoria</h3>
+                    <p class="text-slate-600">Ofereça consultoria especializada para identificar projetos de PD&I, enquadrá-los na lei e maximizar os benefícios fiscais para seus clientes.</p>
+                </div>
+                <div class="bg-white p-8 rounded-xl shadow-lg text-center transform hover:scale-105 transition-transform duration-300">
+                    <div class="mx-auto  rounded-full h-16 w-16 flex items-center justify-center mb-4">
+                        <span class="text-3xl">🚀</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-2">Diferencial Competitivo</h3>
+                    <p class="text-slate-600">Posicione sua firma como parceira de inovação, atraindo clientes de base tecnológica que buscam mais do que a contabilidade tradicional.</p>
+                </div>
+                <div class="bg-white p-8 rounded-xl shadow-lg text-center transform hover:scale-105 transition-transform duration-300">
+                       <div class="mx-auto  rounded-full h-16 w-16 flex items-center justify-center mb-4">
+                        <a class="logo" href="https://impulso.team/pt" target="_blank" rel="noopener noreferrer" class="block h-8"> <img src="logoimpulso.png" alt="Logo Impulso" class="h-full object-contain">
+                    </a>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-2">Fidelização de Clientes</h3>
+                    <p class="text-slate-600">Ao ajudar clientes a economizar significativamente através da inovação, você cria um relacionamento estratégico e de longo prazo.</p>
+                </div>
+            </div>
+        </section>
+
+        
+
+        <section id="documentacao" class="mb-20 scroll-mt-20">
+            <h2 class="text-3xl font-bold text-center mb-2">🧾 Elaboração de Relatório Contábil e Técnico</h2>
+            <p class="text-slate-600 text-center mb-10 max-w-2xl mx-auto">Comprovar que os projetos realizados pela empresa se enquadram como atividades de Pesquisa e Desenvolvimento (P&D), de acordo com a definição da Lei do Bem, e que os gastos foram corretamente registrados.</p>
+            
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-white p-8 rounded-xl shadow-lg">
+                    <h3 class="text-2xl font-bold text-slate-800 mb-4 flex items-center">
+                        <span class="text-3xl mr-3">👨‍🔬</span> Parte Técnica – Relatório Técnico (RT)
+                    </h3>
+                    <p class="text-slate-600 mb-4">Este relatório descreve os projetos de inovação tecnológica desenvolvidos durante o ano-base. É elaborado pela equipe técnica ou P&D da empresa.</p>
+                    <h4 class="font-bold text-lg text-slate-700 mb-2">Deve conter:</h4>
+                    <ul class="list-disc list-inside text-slate-600 space-y-2">
+                        <li><strong>Título do projeto:</strong> Nome claro e objetivo.</li>
+                        <li><strong>Resumo executivo:</strong> Objetivo, motivação e importância do projeto.</li>
+                        <li><strong>Problema técnico ou desafio enfrentado:</strong> O que motivou a empresa a investir no projeto?</li>
+                        <li><strong>Soluções propostas ou testadas:</strong> Caminhos investigados e resultados alcançados.</li>
+                        <li><strong>Atividades realizadas:</strong> Pesquisa aplicada, desenvolvimento de protótipos, testes, registros, etc.</li>
+                        <li><strong>Recursos humanos envolvidos:</strong> Equipe técnica interna ou parceiros externos (universidades, institutos).</li>
+                        <li><strong>Resultados obtidos:</strong> Produtos, processos, serviços ou melhorias implementadas.</li>
+                        <li><strong>Impacto para a empresa:</strong> Ganhos operacionais, comerciais, tecnológicos ou estratégicos.</li>
+                        <li><strong>Cronograma:</strong> Período de execução (datas de início e término).</li>
+                    </ul>
+                </div>
+
+                <div class="bg-white p-8 rounded-xl shadow-lg">
+                    <h3 class="text-2xl font-bold text-slate-800 mb-4 flex items-center">
+                        <span class="text-3xl mr-3">📊</span> Parte Contábil – Relatório Contábil (RC)
+                    </h3>
+                    <p class="text-slate-600 mb-4">Este relatório comprova os valores gastos com as atividades de P&D e que serão utilizados para obtenção da dedução fiscal.</p>
+                    <h4 class="font-bold text-lg text-slate-700 mb-2">Deve conter:</h4>
+                    <ul class="list-disc list-inside text-slate-600 space-y-2">
+                        <li><strong>Listagem detalhada dos gastos com P&D, como:</strong>
+                            <ul class="list-[circle] list-inside ml-4 mt-1 space-y-1">
+                                <li>Salários e encargos de pessoal diretamente envolvido.</li>
+                                <li>Materiais e insumos usados em testes ou protótipos.</li>
+                                <li>Aquisição de equipamentos e softwares (se aplicável).</li>
+                                <li>Despesas com serviços de terceiros, consultorias técnicas, parcerias.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Identificação do centro de custo:</strong> A contabilidade deve estar estruturada para permitir a rastreabilidade dos custos com inovação.</li>
+                        <li><strong>Documentos de suporte:</strong> Notas fiscais, contratos, folhas de pagamento, relatórios de horas, etc.</li>
+                        <li><strong>Segregação entre projetos:</strong> Os custos precisam estar individualizados por projeto ou linha de pesquisa.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="mt-10 bg-blue-50 border-l-4 border-blue-500 p-6 rounded-r-lg">
+                <h4 class="font-bold text-lg text-blue-800 mb-3 flex items-center"><span class="text-2xl mr-2">🧷</span> Importância</h4>
+                <ul class="list-disc list-inside text-blue-700 space-y-1">
+                    <li>É obrigatório para a prestação de contas ao MCTI via sistema FORMP&D.</li>
+                    <li>Pode ser solicitado pela Receita Federal em auditorias.</li>
+                    <li>É prova documental de que os projetos são elegíveis para o incentivo fiscal.</li>
+                </ul>
+            </div>
+            <div class="mt-4 bg-teal-50 border-l-4 border-teal-500 p-6 rounded-r-lg">
+                <h4 class="font-bold text-lg text-teal-800 mb-3 flex items-center"><span class="text-2xl mr-2">📎</span> Dica prática:</h4>
+                <p class="text-teal-700">É altamente recomendável que a empresa mantenha um processo contínuo de documentação durante o ano, e não apenas ao final. Isso facilita a elaboração do relatório e aumenta a chance de aprovação pelo MCTI e Receita Federal.</p>
+                <p class="text-teal-700 mt-2">Se quiser, posso fornecer um modelo de relatório técnico e planilha para controle contábil de P&D. Deseja isso?</p>
+            </div>
+        </section>
+
+        
+
+        <section id="formpd" class="mb-20 scroll-mt-20">
+            <h2 class="text-3xl font-bold text-center mb-2">📤 Entrega do Formulário FORMP&D ao MCTI</h2>
+            <p class="text-slate-600 text-center mb-10 max-w-2xl mx-auto">Informar oficialmente ao Ministério da Ciência, Tecnologia e Inovação (MCTI) os projetos e gastos realizados com Pesquisa e Desenvolvimento (P&D) para pleitear os incentivos fiscais da Lei do Bem.</p>
+            
+            <div class="bg-white p-8 rounded-xl shadow-lg">
+                <h3 class="text-2xl font-bold text-slate-800 mb-4 flex items-center">
+                    <span class="text-3xl mr-3">🖥️</span> O que é o FORMP&D?
+                </h3>
+                <p class="text-slate-600 mb-4">O FORMP&D é um formulário eletrônico obrigatório onde a empresa deve detalhar todas as atividades de inovação realizadas no ano-base, incluindo:</p>
+                <ul class="list-disc list-inside text-slate-600 space-y-1 mb-4">
+                    <li>Descrição técnica dos projetos;</li>
+                    <li>Gastos associados;</li>
+                    <li>Resultados obtidos;</li>
+                    <li>Recursos humanos envolvidos;</li>
+                    <li>Informações econômicas e fiscais.</li>
+                </ul>
+                <p class="text-slate-600">Ele deve ser preenchido e enviado anualmente através do sistema do SISCAPESQ (Sistema de Informação para a Lei do Bem), disponibilizado pelo MCTI.</p>
+                
+                <div class="mt-8 bg-blue-50 border-l-4 border-blue-500 p-6 rounded-r-lg">
+                    <h4 class="font-bold text-lg text-blue-800 mb-3 flex items-center"><span class="text-2xl mr-2">📅</span> Prazo de envio</h4>
+                    <p class="text-blue-700">Até o último dia útil de <strong>julho do ano seguinte ao ano-base</strong>.</p>
+                    <p class="text-blue-700 mt-1">Exemplo: para projetos realizados em 2024, o envio deve ser feito até 31 de julho de 2025.</p>
+                </div>
+
+                <div class="mt-8 bg-stone-100 p-6 rounded-lg">
+                    <h4 class="font-bold text-xl text-slate-800 mb-3">📝 Conteúdo do FORMP&D</h4>
+                    <p class="text-slate-600 mb-4">O formulário é dividido em seções como:</p>
+                    <ul class="list-disc list-inside text-slate-600 space-y-2">
+                        <li><strong>Identificação da empresa:</strong> CNPJ, razão social, CNAE, natureza jurídica etc.</li>
+                        <li><strong>Informações econômico-financeiras:</strong> Receita bruta, lucro real, IRPJ pago, valor de deduções solicitadas etc.</li>
+                        <li><strong>Projetos de P&D:</strong>
+                            <ul class="list-[circle] list-inside ml-4 mt-1 space-y-1">
+                                <li>Nome do projeto;</li>
+                                <li>Área tecnológica (conforme tabela do MCTI);</li>
+                                <li>Objetivo e resumo técnico;</li>
+                                <li>Justificativa de enquadramento na Lei do Bem;</li>
+                                <li>Equipe envolvida;</li>
+                                <li>Parcerias (universidades, ICTs etc);</li>
+                                <li>Resultados obtidos;</li>
+                                <li>Valor total investido no projeto.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Despesas detalhadas:</strong> Por natureza: pessoal, materiais, serviços de terceiros, depreciação etc.</li>
+                        <li><strong>Benefícios fiscais pleiteados:</strong> Valores que a empresa está solicitando como dedução.</li>
+                    </ul>
+                </div>
+
+                <div class="mt-8 bg-blue-50 border-l-4 border-blue-500 p-6 rounded-r-lg">
+                    <h4 class="font-bold text-lg text-blue-800 mb-3 flex items-center"><span class="text-2xl mr-2">✅</span> Condições para envio:</h4>
+                    <ul class="list-disc list-inside text-blue-700 space-y-1">
+                        <li>A empresa precisa estar com o CNPJ ativo e regular.</li>
+                        <li>O formulário deve ser assinado digitalmente por um responsável da empresa com certificado digital (e-CNPJ).</li>
+                        <li>O envio exige registro prévio no sistema SISCAPESQ (<a href="https://formpd.mcti.gov.br" target="_blank" rel="noopener noreferrer" class="underline hover:text-blue-900">https://formpd.mcti.gov.br</a>).</li>
+                    </ul>
+                </div>
+                <div class="mt-4 bg-yellow-50 border-l-4 border-yellow-500 p-6 rounded-r-lg">
+                    <h4 class="font-bold text-lg text-yellow-800 mb-3 flex items-center"><span class="text-2xl mr-2">📌</span> Por que isso é importante?</h4>
+                    <ul class="list-disc list-inside text-yellow-700 space-y-1">
+                        <li>É pré-requisito para que a Receita Federal reconheça o direito aos incentivos fiscais.</li>
+                        <li>O não envio ou envio com dados inconsistentes ou genéricos pode gerar <strong>glosas (rejeições)</strong> dos benefícios, ou até autuação fiscal.</li>
+                    </ul>
+                </div>
+                <div class="mt-4 bg-teal-50 border-l-4 border-teal-500 p-6 rounded-r-lg">
+                    <h4 class="font-bold text-lg text-teal-800 mb-3 flex items-center"><span class="text-2xl mr-2">⚠️</span> Dica importante:</h4>
+                    <p class="text-teal-700">Muitos projetos são glosados por falta de clareza técnica ou má categorização das despesas. Por isso, o FORMP&D deve ser preenchido com o suporte conjunto da equipe técnica, contábil e jurídica.</p>
+                </div>
+            </div>
+        </section>
+
+        
+
+        <section id="boas-praticas" class="scroll-mt-20">
+            <h2 class="text-3xl font-bold text-center mb-2">Navegador de Boas Práticas</h2>
+               <p class="text-slate-600 text-center mb-10 max-w-2xl mx-auto">O benefício da Lei do Bem é "automático", mas a comprovação não é. Uma <strong>documentação robusta</strong> é a chave para a segurança fiscal. Explore as práticas essenciais.</p>
+            <div class="max-w-3xl mx-auto space-y-3" id="accordion-container">
+                <div class="accordion-item bg-white rounded-lg shadow-md">
+                    <button class="accordion-header w-full flex justify-between items-center p-5 text-left font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                        Gestão e Identificação de Projetos
+                        <span class="accordion-arrow transform transition-transform duration-300">&#9660;</span>
+                    </button>
+                    <div class="accordion-content px-5 text-slate-600">
+                        <p>Implemente processos para identificar proativamente projetos com "<strong>elemento novo ou inovador</strong>" e "<strong>melhorias incrementais</strong>". O objetivo é garantir que apenas projetos com real potencial de elegibilidade sejam considerados, focando os esforços onde eles têm mais valor.</p>
+                    </div>
+                </div>
+                   <div class="accordion-item bg-white rounded-lg shadow-md">
+                    <button class="accordion-header w-full flex justify-between items-center p-5 text-left font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                        Documentação Técnica Detalhada
+                        <span class="accordion-arrow transform transition-transform duration-300">&#9660;</span>
+                    </button>
+                    <div class="accordion-content px-5 text-slate-600">
+                        <p>Mantenha registros detalhados das atividades de PD&I, incluindo os <strong>desafios técnicos</strong> enfrentados, as soluções desenvolvidas, os testes realizados e os protótipos criados. Esta documentação é a prova material da inovação perante o MCTI e a Receita Federal.</p>
+                    </div>
+                </div>
+                <div class="accordion-item bg-white rounded-lg shadow-md">
+                    <button class="accordion-header w-full flex justify-between items-center p-5 text-left font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                        Documentação Financeira Rastreável
+                        <span class="accordion-arrow transform transition-transform duration-300">&#9660;</span>
+                    </button>
+                    <div class="accordion-content px-5 text-slate-600">
+                        <p>Registre meticulosamente todos os dispêndios (RH, materiais, serviços de terceiros) vinculados exclusivamente aos projetos de PD&I. A <strong>rastreabilidade financeira</strong> é crucial para a quantificação correta dos benefícios fiscais e para passar por auditorias sem sobressaltos.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-slate-800 text-white mt-20">
+        <div class="container mx-auto px-4 py-8 text-center">
+            <p>Aplicação desenvolvida para explorar a Lei nº 11.196/2005.</p>
+            <p class="mt-2">Conectando engenharia de software e inovação fiscal.</p>
+            <div class="mt-4">
+                   <a href="https://github.com/19lemabe94/leidobem-explorer" target="_blank" rel="noopener noreferrer" class="text-blue-300 hover:text-blue-400 transition-colors">Ver Projeto no GitHub</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Mobile Menu
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+                // Adiciona/remove aria-expanded para acessibilidade
+                const isExpanded = mobileMenu.classList.contains('hidden');
+                mobileMenuButton.setAttribute('aria-expanded', !isExpanded);
+            });
+
+            // Active Nav Link on Scroll
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.nav-link');
+            window.addEventListener('scroll', () => {
+                let current = '';
+                // Calcula a posição de cada seção para determinar a seção visível
+                sections.forEach(section => {
+                    // Offset de 150px para ativar o link um pouco antes da seção chegar ao topo
+                    const sectionTop = section.offsetTop; 
+                    if (pageYOffset >= sectionTop - 150) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').includes(current)) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+
+            // Eligibility Checklist
+            const checklist = document.getElementById('checklist');
+            const resultDiv = document.getElementById('eligibility-result');
+            const criteria = {
+                lucroReal: false,
+                lucroFiscal: false,
+                regularidade: false,
+                investimento: false,
+            };
+
+            checklist.addEventListener('change', (e) => {
+                const criterion = e.target.dataset.criterion;
+                if (criterion) {
+                    criteria[criterion] = e.target.checked;
+                    // Adiciona/remove classe para feedback visual
+                    const label = e.target.closest('label');
+                    if (label) {
+                        if (e.target.checked) {
+                            label.classList.add('checked');
+                        } else {
+                            label.classList.remove('checked');
+                        }
+                    }
+                }
+                updateEligibilityResult();
+            });
+
+            function updateEligibilityResult() {
+                const allChecked = Object.values(criteria).every(Boolean);
+                const someChecked = Object.values(criteria).some(Boolean);
+
+                if (allChecked) {
+                    resultDiv.textContent = '🎉 Parabéns! Sua empresa atende a todos os critérios essenciais de elegibilidade.';
+                    resultDiv.className = 'mt-8 p-5 rounded-lg text-center font-semibold bg-green-100 text-green-800 transition-all duration-500';
+                } else if (someChecked) {
+                    const missing = Object.keys(criteria).filter(k => !criteria[k]).length;
+                    resultDiv.textContent = `⚠️ Atenção: Falta(m) ${missing} critério(s) para a elegibilidade completa.`;
+                    resultDiv.className = 'mt-8 p-5 rounded-lg text-center font-semibold bg-yellow-100 text-yellow-800 transition-all duration-500';
+                } else {
+                    resultDiv.textContent = 'Selecione os critérios para ver o resultado.';
+                    resultDiv.className = 'mt-8 p-5 rounded-lg text-center font-semibold bg-stone-100 text-slate-600 transition-all duration-500';
+                }
+            }
+
+            // Incentives Chart
+            const slider = document.getElementById('despesasSlider');
+            const valorDisplay = document.getElementById('despesasValor');
+            const ctx = document.getElementById('incentivosChart').getContext('2d');
+            let chart;
+
+            const formatCurrency = (value) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+
+            function createOrUpdateChart(despesa) {
+                const deducao = despesa * 0.60; // 60% dedução é um valor ilustrativo comum para Lei do Bem
+                const aliquotaIRPJCSLL = 0.34; // Alíquota combinada de IRPJ (15% + 10% adicional) e CSLL (9%) = 34%
+                const economia = deducao * aliquotaIRPJCSLL;
+                // const custoFinal = despesa - economia; // Não mais usado diretamente no gráfico, mas mantido para referência.
+                
+                valorDisplay.textContent = formatCurrency(despesa);
+
+                const chartData = {
+                    labels: ['Dispêndio com PD&I', 'Economia Estimada'], // Rótulos atualizados
+                    datasets: [{
+                        label: 'Valor em R$',
+                        data: [despesa, economia], // Dados atualizados para mostrar economia
+                        backgroundColor: ['#9ca3af', '#2563eb'], // Cinza para dispêndio, Azul para economia
+                        borderColor: ['#6b7280', '#1d4ed8'],
+                        borderWidth: 1
+                    }]
+                };
+
+                const chartOptions = {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y', // Gráfico de barras horizontal
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return formatCurrency(value);
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        title: {
+                            display: true,
+                            text: `Com ${formatCurrency(despesa)} em gastos, a economia estimada é de ${formatCurrency(economia)}`,
+                            font: { size: 16, weight: 'bold' },
+                            color: '#334155' // slate-700
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.label}: ${formatCurrency(context.raw)}`;
+                                }
+                            }
+                        }
+                    }
+                };
+
+                if (chart) {
+                    chart.data = chartData;
+                    chart.options = chartOptions; // Atualiza opções também para o título
+                    chart.update();
+                } else {
+                    chart = new Chart(ctx, {
+                        type: 'bar',
+                        data: chartData,
+                        options: chartOptions
+                    });
+                }
+            }
+
+            slider.addEventListener('input', (e) => createOrUpdateChart(parseInt(e.target.value)));
+            // Inicializa o gráfico com o valor padrão do slider
+            createOrUpdateChart(parseInt(slider.value));
+
+            // Innovation Tabs
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabContents = {
+                'dev-experimental': document.getElementById('dev-experimental-content'),
+                'pesquisa-aplicada': document.getElementById('pesquisa-aplicada-content'),
+            };
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const tab = button.dataset.tab;
+                    
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    
+                    Object.values(tabContents).forEach(content => content.classList.add('hidden'));
+                    tabContents[tab].classList.remove('hidden');
+                });
+            });
+
+            // Accordion
+            const accordionContainer = document.getElementById('accordion-container');
+            accordionContainer.addEventListener('click', function(e) {
+                const header = e.target.closest('.accordion-header');
+                if (!header) return;
+
+                const item = header.parentElement;
+                const wasOpen = item.classList.contains('open');
+
+                // Close all items, but only if the clicked item wasn't open
+                Array.from(item.parentElement.children).forEach(child => {
+                    if (child !== item || wasOpen) { // Only close others, or close self if it was open
+                        child.classList.remove('open');
+                    }
+                });
+
+                // If it wasn't open, open it
+                if (!wasOpen) {
+                    item.classList.add('open');
+                }
+            });
+
+        });
+    </script>
+</body>
+</html>
