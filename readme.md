@@ -31,12 +31,7 @@ Este projeto foi construído utilizando um stack simples e eficaz para desenvolv
 Explore a Lei do Bem de forma interativa agora mesmo:
 [https://19lemabe94.github.io/leidobem-explorer/](https://19lemabe94.github.io/leidobem-explorer/)
 
-## 🤝 Parceiros
 
-Este projeto é uma iniciativa que visa democratizar o acesso à informação sobre a Lei do Bem, contando com o apoio de:
-
-* [**Impulso.team**](https://impulso.team/pt)
-* [**Coplan Contabilidade**](https://www.coplancontabilidade.com.br/index)
 
 ## 🛠 Como Rodar Localmente (para Desenvolvedores)
 
